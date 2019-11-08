@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
-import { LoadingController, AlertController } from '@ionic/angular';
+import { LoadingController, AlertController, ToastController } from '@ionic/angular';
 
 const graphqlQuery = gql`
   query GetInfo($url: String!) {
@@ -32,7 +32,8 @@ export class HomePage implements OnInit {
   constructor(
     private readonly apollo: Apollo,
     private readonly loadingController: LoadingController,
-    private readonly alertController: AlertController) {}
+    private readonly alertController: AlertController,
+    private readonly toastController: ToastController,) {}
 
   async fetch() {
     localStorage.setItem("url", this.url);
@@ -42,6 +43,7 @@ export class HomePage implements OnInit {
     try {
       const response = await this.apollo.query({ query: graphqlQuery, variables: { url: this.url }}).toPromise();
       this.urlInfos.unshift((response.data as any).getInfo);
+      localStorage.setItem("urlInfos", JSON.stringify(this.urlInfos));
 
     }
     catch(e) {
@@ -53,8 +55,40 @@ export class HomePage implements OnInit {
     }
   }
 
+  openVlc(url: string) {
+    window.open(`vlc://${url}`, "_blank");
+  }
+
+  async copyToClipboard(val: string){
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = val;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+
+    const toast = await this.toastController.create({ message: "Link copied to clipboard", duration: 1500 });
+    await toast.present();
+  }
+
+  async reset() {
+    this.urlInfos = [];
+    localStorage.setItem("urlInfos", JSON.stringify(this.urlInfos));
+    await this.apollo.getClient().cache.reset();
+  }
+
   ngOnInit() {
     this.url = localStorage.getItem("url") || "";
+    try {
+      this.urlInfos = JSON.parse(localStorage.getItem("urlInfos")) || [];
+    } catch(e) {
+      this.urlInfos = [];
+    }
   }
 
 }
