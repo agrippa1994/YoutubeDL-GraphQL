@@ -14,4 +14,7 @@ export class Info {
 
   @Field({ nullable: true, name: 'fullTitle' })
   fulltitle: string;
+
+  @Field({ nullable: true })
+  thumbnail: string;
 }

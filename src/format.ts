@@ -12,5 +12,8 @@ export class Format {
   format_note: string;
 
   @Field({ nullable: true })
+  format: string;
+
+  @Field({ nullable: true })
   url: string;
 }
