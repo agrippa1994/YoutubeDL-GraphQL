@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      YTDL-Querier
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-input placeholder="Enter URL" [(ngModel)]="url"></ion-input>
+  <ion-button expand="block" (click)="fetch()">Query</ion-button>
+
+  <ion-card *ngFor="let urlInfo of urlInfos">
+    <img src="{{urlInfo.thumbnail}}">
+    <ion-card-header>
+      <ion-card-subtitle>{{ urlInfo.extractor }}</ion-card-subtitle>
+      <ion-card-title>{{ urlInfo.fullTitle }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list *ngIf="urlInfo && urlInfo.formats">
+        <ion-item *ngFor="let format of urlInfo.formats">
+          <p><a href="{{format.url}}">{{ format.format }}</a></p>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
