@@ -13,7 +13,9 @@ import { Format } from './format';
 export class AppResolver {
   @Query(returns => Info)
   async getInfo(@Args('url') url: string) {
-    return (await this.getYoutubeInfo(url)) as Info;
+    const res = (await this.getYoutubeInfo(url)) as Info;
+    console.log(res);
+    return res;
   }
 
   @ResolveProperty()
