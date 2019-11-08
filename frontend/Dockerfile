@@ -5,7 +5,7 @@ COPY . .
 
 RUN npm install -g yarn
 RUN yarn install
-RUN yarn build
+RUN yarn build --prod
 
 
 FROM nginx:1.15.10
