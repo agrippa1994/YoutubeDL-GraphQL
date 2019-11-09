@@ -3,11 +3,13 @@ import {ApolloModule, APOLLO_OPTIONS} from 'apollo-angular';
 import {HttpLinkModule, HttpLink} from 'apollo-angular-link-http';
 import {InMemoryCache} from 'apollo-cache-inmemory';
 import {persistCache} from 'apollo-cache-persist';
+import ApolloLinkTimeout from 'apollo-link-timeout';
 
 // const uri = 'https://ytdl.mani94.space/graphql'; // <-- add the URL of the GraphQL server here
 const uri = '/graphql'; // <-- add the URL of the GraphQL server here
 
 const cache = new InMemoryCache();
+const timeoutLink = new ApolloLinkTimeout(15000);
 
 persistCache({
   cache: cache,
@@ -16,7 +18,7 @@ persistCache({
 
 export function createApollo(httpLink: HttpLink) {
   return {
-    link: httpLink.create({uri}),
+    link: timeoutLink.concat(httpLink.create({uri})),
     cache: cache,
   };
 }
