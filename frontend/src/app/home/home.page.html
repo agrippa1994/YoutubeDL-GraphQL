@@ -4,8 +4,8 @@
       YTDL-Querier
     </ion-title>
     <ion-buttons slot="primary">
-      <ion-button color="danger" (click)="reset()">
-        <ion-icon slot="end" name="trash"></ion-icon>
+      <ion-button color="danger" fill="clear" (click)="reset()">
+        <ion-icon slot="icon-only" name="trash"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -24,10 +24,17 @@
     <ion-card-content>
       <ion-list *ngIf="urlInfo && urlInfo.formats">
         <ion-item *ngFor="let format of urlInfo.formats">
-          <ion-label><a href="{{format.url}}">{{ format.format }}</a></ion-label>
+          <ion-label>
+            <a href="{{format.url}}">{{ format.format }}</a>
+            <p>{{ (format.filesize / 1000000) | number:'1.1-1' }}MB</p>
+          </ion-label>
 
-          <ion-icon (click)="copyToClipboard(format.url)" slot="end" name="clipboard"></ion-icon>
-          <ion-icon (click)="openVlc(format.url)" slot="end" name="play"></ion-icon>
+          <ion-button color="warning" slot="end" fill="clear" (click)="copyToClipboard(format.url)">
+            <ion-icon slot="icon-only" name="clipboard"></ion-icon>
+          </ion-button>
+          <ion-button color="success" slot="end" fill="clear" (click)="openVlc(format.url)">
+            <ion-icon slot="icon-only" name="play"></ion-icon>
+          </ion-button>
         </ion-item>
       </ion-list>
     </ion-card-content>
