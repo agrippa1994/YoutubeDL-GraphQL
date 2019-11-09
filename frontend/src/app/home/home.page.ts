@@ -38,8 +38,10 @@ export class HomePage implements OnInit {
   async fetch() {
     localStorage.setItem("url", this.url);
 
-    const loader = await this.loadingController.create({ backdropDismiss: false });
-    loader.translucent = true;
+    const loader = await this.loadingController.create({
+      backdropDismiss: false,
+      translucent: true,
+    });
     await loader.present();
     try {
       const response = await this.apollo.query({ query: graphqlQuery, variables: { url: this.url }}).toPromise();
@@ -48,8 +50,12 @@ export class HomePage implements OnInit {
 
     }
     catch(e) {
-      const alert = await this.alertController.create({ header: "Error while querying data", message: e.message, buttons: ["OK"] });
-      alert.translucent = true;
+      const alert = await this.alertController.create({
+        header: "Error while querying data",
+        message: e.message,
+        buttons: ["OK"],
+        translucent: true,
+       });
       await alert.present();
     }
     finally {
@@ -74,15 +80,33 @@ export class HomePage implements OnInit {
     document.execCommand('copy');
     document.body.removeChild(selBox);
 
-    const toast = await this.toastController.create({ message: "Link copied to clipboard", duration: 1500 });
-    toast.translucent = true;
+    const toast = await this.toastController.create({
+      message: "Link copied to clipboard",
+      duration: 1500,
+      translucent: true
+    });
     await toast.present();
   }
 
   async reset() {
-    this.urlInfos = [];
-    localStorage.setItem("urlInfos", JSON.stringify(this.urlInfos));
-    await this.apollo.getClient().cache.reset();
+    const alertWindow = await this.alertController.create({
+      header: "Warning",
+      message: "This will delete all your search results. Do you want to continue?",
+      backdropDismiss: false,
+      translucent: true,
+      buttons: ["No", {
+        text: "Yes",
+        role: "cancel",
+        cssClass: "danger",
+        handler: async () => {
+          this.urlInfos = [];
+          localStorage.setItem("urlInfos", JSON.stringify(this.urlInfos));
+          await this.apollo.getClient().cache.reset();
+        },
+      }],
+    });
+    await alertWindow.present();
+
   }
 
   ngOnInit() {
