@@ -39,6 +39,7 @@ export class HomePage implements OnInit {
     localStorage.setItem("url", this.url);
 
     const loader = await this.loadingController.create({ backdropDismiss: false });
+    loader.translucent = true;
     await loader.present();
     try {
       const response = await this.apollo.query({ query: graphqlQuery, variables: { url: this.url }}).toPromise();
@@ -48,6 +49,7 @@ export class HomePage implements OnInit {
     }
     catch(e) {
       const alert = await this.alertController.create({ header: "Error while querying data", message: e.message, buttons: ["OK"] });
+      alert.translucent = true;
       await alert.present();
     }
     finally {
@@ -73,6 +75,7 @@ export class HomePage implements OnInit {
     document.body.removeChild(selBox);
 
     const toast = await this.toastController.create({ message: "Link copied to clipboard", duration: 1500 });
+    toast.translucent = true;
     await toast.present();
   }
 
